@@ -11,7 +11,7 @@ kl = list(obj.keys()) #keylist
 printdebug = False
 plot_pricesDone = False
 
-startdate = datetime(2014, 1, 1)
+startdate = datetime(2019, 1, 1)
 enddate = datetime(2020, 8, 1)
 
 #TODO: make budget list 2d list and create multiple graphs for each simulation
@@ -25,9 +25,6 @@ def convert_to_unix(dt_obj):
 def simulation(buy_time, sell_time, money, num):
   global plot_pricesDone
   val = 1234567
-
-  #buy_time = convert_to_unix(startdate + timedelta(hours=18))
-  #sell_time = convert_to_unix(startdate + timedelta(hours=10))
 
   if num != 0:
     budget_list.append([])
@@ -75,13 +72,14 @@ def multi_simulation():
 
   #limit = 8
   for a in range(1, 24):
+    print(a)
     for b in range(1, 24):
-      tbuy = convert_to_unix(startdate + timedelta(hours=b))
-      tsell = convert_to_unix(startdate + timedelta(hours=a))
+      tbuy = convert_to_unix(startdate + timedelta(hours=a))
+      tsell = convert_to_unix(startdate + timedelta(hours=b))
       money = simulation(tbuy, tsell, budget, 0)
       if money > max_money:
         max_money = money
-        max_val = str(a)+ " | " + str(b)
+        max_val = "tbuy %s | tsell %s" % (tbuy, tsell)
 
       if printdebug: 
         print("Max: %0.2f " %max_money)
@@ -94,18 +92,19 @@ def multi_simulation_graph():
   max_money = 0
   max_val = ""
  
-  for a in range(4):
-      tbuy = convert_to_unix(startdate + timedelta(hours=a+5))
-      tsell = convert_to_unix(startdate + timedelta(hours=23))
-      money = simulation(tbuy, tsell, budget, a)
-      plt.plot(budget_list[a], label="Buy-Time:" + str(a+5))
-      if money > max_money:
-        max_money = money
-        #max_val = str(a)+ " | " + str(b)
+  for a in range(10):
+    budget_list.append([])
+    tbuy = convert_to_unix(startdate + timedelta(hours=3+a))
+    tsell = convert_to_unix(startdate + timedelta(hours=2))
+    money = simulation(tbuy, tsell, budget, a)
+    plt.plot(budget_list[a], label="Buy-Time:" + str(3+a))
+    if money > max_money:
+      max_money = money
+      #max_val = str(a)+ " | " + str(b)
 
-      if printdebug: 
-        print("Max: %0.2f " %max_money)
-        print(max_val)
+    if printdebug: 
+      print("Max: %0.2f " %max_money)
+      print(max_val)
 
   #print(max_val)
   return max_money
@@ -116,8 +115,8 @@ prices = kl[kl.index(str(convert_to_unix(startdate))):kl.index(str(convert_to_un
 price_at_start = obj[str(convert_to_unix(startdate))][0]['price'] #price at start
 price_at_end = obj[str(convert_to_unix(enddate))][0]['price']     #price at end
 
-tbuy = convert_to_unix(startdate + timedelta(hours=5, minutes=0))
-tsell = convert_to_unix(startdate + timedelta(hours=23, minutes=0))
+tbuy = convert_to_unix(startdate + timedelta(hours=7))
+tsell = convert_to_unix(startdate + timedelta(hours=2))
 
 days = convert_to_unix(enddate)-convert_to_unix(startdate)
 days = days/60/60/24
@@ -134,12 +133,15 @@ for i in range(int(len(prices)/288)):
 
 plot_prices = []
 budget_list = []
-#money = simulation(tbuy, tsell, budget, 0)
-money = multi_simulation()
+
+
+money = simulation(tbuy, tsell, budget, 0)
+#money = multi_simulation()
+#money = multi_simulation_graph()
 
 plt.plot(plot_prices, label="BTC-Price")
 #plt.plot(budget_list[0])
-#plt.xlim(0, len(plot_prices))
+plt.xlim(0)
 plt.ylim(0)
 plt.xlabel("Time")
 plt.ylabel("Price")
