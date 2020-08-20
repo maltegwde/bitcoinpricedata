@@ -1,5 +1,7 @@
 import requests
 import json
+from datetime import datetime, timedelta
+from tools import convert_to_unix, getCryptoId
 
 #starting at 1514764800 (1.1.2018 0:00)
 #steps of 4000 with 5min interval
@@ -7,8 +9,8 @@ import json
 # 20000*60 = 1.200.000 seconds per request
 # 1577836800
 
-starttime = 1388534400      #1.1.2014
-max = 1596240000            #1.8.2020
+starttime = convert_to_unix(datetime(2014, 1, 1))
+endtime = convert_to_unix(datetime(2020, 8, 19) + timedelta(minutes=5))
 limit = 4000
 
 i = 0
@@ -17,12 +19,15 @@ c = limit*5*60  #constant which is added to utime after each run
 utime=starttime
 output = {}
 
-while utime <= max:
-    response = requests.get('https://api.coinpaprika.com/v1/tickers/btc-bitcoin/historical?start=' + str(utime) + '&limit=' + str(limit))
+
+crypto_id = getCryptoId()
+
+while utime <= endtime:
+    response = requests.get('https://api.coinpaprika.com/v1/tickers/' +  crypto_id + '/historical?start=' + str(utime) + '&limit=' + str(limit))
     res = json.loads(response.content)
 
     for x in range(len(res)):
-        if(utime+5*60*x<max):
+        if(utime+5*60*x<endtime):
             output[utime+5*60*x] = []
             output[utime+5*60*x].append({
                 #'timestamp': res[x]["timestamp"],
@@ -36,5 +41,5 @@ while utime <= max:
     i+=limit
     print(i/limit)
 
-with open('temp.json', 'w') as outfile:
+with open(crypto_id + '.json', 'w') as outfile:
     json.dump(output, outfile, indent=4)

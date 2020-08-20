@@ -1,6 +1,11 @@
 import json
+from tools import getCryptoId
 
-with open('json/btc.json') as f:
+crypto_id = getCryptoId()
+
+filename = "json/" + crypto_id + ".json"
+
+with open(filename) as f:
   obj = json.load(f)
 
 kl = list(obj.keys()) #keylist
@@ -35,6 +40,5 @@ for i in range(len(kl)-1):
 
 merged = {**obj, **output}
 
-
-with open('json/btc.json', 'w') as outfile:
+with open(filename, 'w') as outfile:
     json.dump(merged, outfile, indent=4, sort_keys=True)
