@@ -2,15 +2,22 @@ import json
 import calendar
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-from movingaverage import get200ma, get200ma_range
-from tools import getCryptoId, convert_to_unix, convert_to_dt
+from movingaverage import get200ma, get200ma_range, get50ma_range, getma_range
+from tools import getCryptoId, convert_to_unix, convert_to_dt, getDailyPrices
 
 crypto_id = getCryptoId()
 
 with open('json/' + crypto_id  + '.json') as f:
   obj = json.load(f)
 
+
+debug_print = False
+
+
 kl = list(obj.keys()) #keylist
+fts = kl[0]#first timestamp
+
+if debug_print: print("First timestamp of data: %s " %fts)
 
 pl = []
 
@@ -20,14 +27,13 @@ for k in kl:
 
 printdebug = False
 
-startdate = datetime(2016, 8, 8)
-enddate = datetime(2020, 8, 1)
+startdate = datetime(2014, 1, 1)
+enddate = datetime(2020, 8, 19)
 
 
 prices = kl[kl.index(str(convert_to_unix(startdate))):kl.index(str(convert_to_unix(enddate)))] #create a new list of unix-timestamps from startdate-enddate(+1)
 price_at_start = obj[str(convert_to_unix(startdate))][0]['price'] #price at start
 price_at_end = obj[str(convert_to_unix(enddate))][0]['price']     #price at end
-
 
 tbuy = convert_to_unix(startdate + timedelta(hours=11, minutes=0))
 tsell = convert_to_unix(startdate + timedelta(hours=8, minutes=0))
@@ -37,27 +43,29 @@ trepeat = 60*60*24  #when to repeat the buy/sell action; 86400 = one day, 604800
 budget = price_at_start        #starting budget to invest
 #val = 0.0           #amount of cryptocurrency 
 
-"""
-for i in range(int(len(prices)/288)):
-  plot_prices.append(obj[str(int(convert_to_unix(startdate))+(i*86400))][0]['price'])
-"""
-
 plot_prices = []
 budget_list = []
 
-#print(get200ma(convert_to_unix(datetime(2020, 1, 1)), pl, kl))
+print("Number of datapoints in json: %0.2f" %(len(kl)/288))
 
-ma200 = get200ma_range(convert_to_unix(datetime(2020, 1, 2)), convert_to_unix(datetime(2020, 8, 18)), pl, kl)
+tmp = startdate
+for i in range(int(len(prices)/288)):
+  plot_prices.append(round(obj[str(convert_to_unix(tmp))][0]['price'], 2))
+  tmp += timedelta(hours=24)
 
-print(ma200)
-print(len(ma200))
+plt.plot(getma_range(365, convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label="365day ma")
+plt.plot(get200ma_range(convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label="200day ma")
+plt.plot(get50ma_range(convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label="50day ma")
 
-ma200_days = []
+plt.plot(plot_prices, label="BTC")
 
-for x in range(len(ma200)):
-  pass
+plt.xlabel("Time")
+plt.ylabel("Price")
 
-plt.plot(ma200)
+plt.xlim(0, len(plot_prices))
+plt.ylim(0)
+
+plt.legend()
 plt.show()
 
 """

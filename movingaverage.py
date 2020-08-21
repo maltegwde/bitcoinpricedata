@@ -1,5 +1,7 @@
 #gibt zurück, ob das 50 Tage moving average über dem 200 Tage moving average ist.
 
+debug_print = False
+
 def is_goldencross(number, price_list):
 
 
@@ -23,7 +25,7 @@ def get200ma(timestamp, price_list, key_list):
 
     return round(total/200, 2)
 
-def get200ma_range(starttime, endtime, price_list, key_list):
+def getma_range(number_of_days, starttime, endtime, price_list, key_list):
     days = int((endtime - starttime) / 86400)
     index = key_list.index(str(starttime))
     daily = 0
@@ -34,34 +36,43 @@ def get200ma_range(starttime, endtime, price_list, key_list):
     for x in range(days):
         if x == 0:
             #get price for last 200 days
-            for day in range(200):    #last 200days
-                daily = price_list[index-(day*288)]
-                print(index)
-                print(index-(day*288))
-                print("days: %s daily: %s " %(day, daily))
-                day_prices.append(round(daily, 2))
-                daily = 0
+            for day in range(number_of_days):    #last 200days
+                #if debug_print:
+                if debug_print:
+                    print(index)
+                    print(index-(day*288))
+                    print("days: %s daily: %s " %(day, daily))
+                if index-(day*288) > 0:
+                    day_prices.append(round(price_list[index-(day*288)], 2))
+                else:       #if the price data given has no data, append the price at the starting time to the list
+                    day_prices.append(round(price_list[key_list.index(str(starttime))], 6))
             
             sum = 0
+
+
             #calculate 200 day average
             for x in range(len(day_prices)):
                 sum += day_prices[x]
 
-            total = sum/len(day_prices)
-
+            if len(day_prices) != 0:
+                total = sum/len(day_prices)
+            else:
+                total = price_list[key_list.index(str(starttime))]
 
             total = round(total, 2)
 
-            print(total)
+            if debug_print: print(total)
 
             ma_total.append(total)
         else:
-            day_prices.pop(0)    #remove first elemt from day_prices list
+            if len(day_prices) > 0:
+                day_prices.pop(0)    #remove first elemt from day_prices list
             daily = price_list[index+(x*288)]   #sucht den nächsten preis (24h später, 300s*288)
             day_prices.append(round(daily, 2))   #append new day_price to list
-            print("price today:%s " %daily)
-            daily = 0
 
+            if debug_print: print("price today:%s " %daily)
+
+            daily = 0
             sum = 0
             #calculate 200 day average
             for x in range(len(day_prices)):
@@ -70,11 +81,18 @@ def get200ma_range(starttime, endtime, price_list, key_list):
             total = sum/len(day_prices)
             total = round(total, 2)
 
-            print(total)
-            
+            if debug_print: print(total)
 
             ma_total.append(total)
+
+    print("LEN MA_TOTAL= %s" %len(ma_total))
     return ma_total
+
+def get200ma_range(starttime, endtime, price_list, key_list):
+    return getma_range(200 ,starttime, endtime, price_list, key_list)
+
+def get50ma_range(starttime, endtime, price_list, key_list):
+    return getma_range(50 ,starttime, endtime, price_list, key_list)
 
 def get50ma():
     pass
