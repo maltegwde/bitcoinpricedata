@@ -39,7 +39,7 @@ while utime <= endtime:
 
     utime += c
     i+=limit
-    print(i/limit)
+    print(int(i/limit))
 
-with open(crypto_id + '.json', 'w') as outfile:
+with open('json/' + crypto_id + '.json', 'w') as outfile:
     json.dump(output, outfile, indent=4)

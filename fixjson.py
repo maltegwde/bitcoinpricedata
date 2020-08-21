@@ -13,6 +13,9 @@ output = {}
 
 missing_data = 0
 
+decimals = len(str(obj[kl[0]][0]['price']).split('.')[1])
+
+
 for i in range(len(kl)-1):
   tmp = int(kl[i]) + 300
   diff = int(kl[i+1]) - int(kl[i])
@@ -29,27 +32,28 @@ for i in range(len(kl)-1):
     pdiff_per_step = pdiff/d2
 
     utime = int(kl[i])
-    price = round(obj[kl[i]][0]['price'], 2)
+    price = obj[kl[i]][0]['price']
 
     for i in range(d2):
       utime+=300
       price += pdiff_per_step
-      price = round(price, 2)
+      price = round(price, int(decimals))
 
       output[str(utime)] = []
       output[str(utime)].append({
         'price': price
       })
 
-merged = {**obj, **output}
-
-with open(filename, 'w') as outfile:
-    json.dump(merged, outfile, indent=4, sort_keys=True)
+print("saving to file...")
 
 percentage_of_missing_datapoints = 0
 
 if missing_data > 0:
+  merged = {**obj, **output}
+  with open(filename, 'w') as outfile:
+    json.dump(merged, outfile, indent=4, sort_keys=True)
   percentage_of_missing_datapoints = (missing_data/len(kl)) * 100
 
 print()
-print("Fixed the price-file! %s datapoints were fixed. That's %0.2f of all %s datapoints" %(missing_data, percentage_of_missing_datapoints, len(kl)))
+print(decimals)
+print("Fixed the price-file! %s datapoints were fixed. That's %0.2f%% of all %s datapoints" %(missing_data, percentage_of_missing_datapoints, len(kl)))

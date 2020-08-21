@@ -30,6 +30,8 @@ printdebug = False
 startdate = datetime(2014, 1, 1)
 enddate = datetime(2020, 8, 19)
 
+print(convert_to_unix(startdate))
+print(convert_to_unix(enddate))
 
 prices = kl[kl.index(str(convert_to_unix(startdate))):kl.index(str(convert_to_unix(enddate)))] #create a new list of unix-timestamps from startdate-enddate(+1)
 price_at_start = obj[str(convert_to_unix(startdate))][0]['price'] #price at start
@@ -50,14 +52,14 @@ print("Number of datapoints in json: %0.2f" %(len(kl)/288))
 
 tmp = startdate
 for i in range(int(len(prices)/288)):
-  plot_prices.append(round(obj[str(convert_to_unix(tmp))][0]['price'], 2))
+  plot_prices.append(obj[str(convert_to_unix(tmp))][0]['price'])
   tmp += timedelta(hours=24)
 
-plt.plot(getma_range(365, convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label="365day ma")
-plt.plot(get200ma_range(convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label="200day ma")
-plt.plot(get50ma_range(convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label="50day ma")
+#plt.plot(getma_range(365, convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label="365day ma")
+#plt.plot(get200ma_range(convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label="200day ma")
+#plt.plot(get50ma_range(convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label="50day ma")
 
-plt.plot(plot_prices, label="BTC")
+plt.plot(plot_prices, label=crypto_id)
 
 plt.xlabel("Time")
 plt.ylabel("Price")

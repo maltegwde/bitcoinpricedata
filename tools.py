@@ -1,7 +1,7 @@
 from datetime import datetime
 import calendar
 
-crypto_id = "btc-bitcoin"
+crypto_id = "doge-dogecoin"
 
 def convert_to_dt(timestamp):
   return datetime.utcfromtimestamp(timestamp)
