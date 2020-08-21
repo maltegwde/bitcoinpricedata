@@ -55,6 +55,12 @@ for i in range(int(len(prices)/288)):
   plot_prices.append(obj[str(convert_to_unix(tmp))][0]['price'])
   tmp += timedelta(hours=24)
 
+
+ma_days = [50, 200, 1000]
+
+for day in ma_days:
+  plt.plot(getma_range(day, convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label= str(day) + " day ma")
+
 #plt.plot(getma_range(365, convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label="365day ma")
 #plt.plot(get200ma_range(convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label="200day ma")
 #plt.plot(get50ma_range(convert_to_unix(startdate), convert_to_unix(enddate), pl, kl), label="50day ma")

@@ -28,6 +28,7 @@ def get200ma(timestamp, price_list, key_list):
 def getma_range(number_of_days, starttime, endtime, price_list, key_list):
     days = int((endtime - starttime) / 86400)
     index = key_list.index(str(starttime))
+    decimals = len(str(price_list[0]).split('.')[1])
     daily = 0
 
     day_prices = []
@@ -59,7 +60,7 @@ def getma_range(number_of_days, starttime, endtime, price_list, key_list):
             else:
                 total = price_list[key_list.index(str(starttime))]
 
-            total = round(total, 2)
+            total = round(total, decimals)
 
             if debug_print: print(total)
 
@@ -68,7 +69,7 @@ def getma_range(number_of_days, starttime, endtime, price_list, key_list):
             if len(day_prices) > 0:
                 day_prices.pop(0)    #remove first elemt from day_prices list
             daily = price_list[index+(x*288)]   #sucht den nächsten preis (24h später, 300s*288)
-            day_prices.append(round(daily, 2))   #append new day_price to list
+            day_prices.append(round(daily, decimals))   #append new day_price to list
 
             if debug_print: print("price today:%s " %daily)
 
@@ -77,9 +78,9 @@ def getma_range(number_of_days, starttime, endtime, price_list, key_list):
             #calculate 200 day average
             for x in range(len(day_prices)):
                 sum += day_prices[x]
-
+ 
             total = sum/len(day_prices)
-            total = round(total, 2)
+            total = round(total, decimals)
 
             if debug_print: print(total)
 
