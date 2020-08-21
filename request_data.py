@@ -1,7 +1,7 @@
 import requests
 import json
 from datetime import datetime, timedelta
-from tools import convert_to_unix, getCryptoId
+from tools import convert_to_unix, convert_to_dt, getCryptoId
 
 #starting at 1514764800 (1.1.2018 0:00)
 #steps of 4000 with 5min interval
@@ -22,9 +22,12 @@ output = {}
 
 crypto_id = getCryptoId()
 
+
 while utime <= endtime:
     response = requests.get('https://api.coinpaprika.com/v1/tickers/' +  crypto_id + '/historical?start=' + str(utime) + '&limit=' + str(limit))
     res = json.loads(response.content)
+
+    #print(response.status_code)
 
     for x in range(len(res)):
         if(utime+5*60*x<endtime):

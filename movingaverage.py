@@ -26,6 +26,8 @@ def get200ma(timestamp, price_list, key_list):
     return round(total/200, 2)
 
 def getma_range(number_of_days, starttime, endtime, price_list, key_list):
+    starttime = int(starttime)
+    endtime = int(endtime)
     days = int((endtime - starttime) / 86400)
     index = key_list.index(str(starttime))
     decimals = len(str(price_list[0]).split('.')[1])
@@ -85,8 +87,6 @@ def getma_range(number_of_days, starttime, endtime, price_list, key_list):
             if debug_print: print(total)
 
             ma_total.append(total)
-
-    print("LEN MA_TOTAL= %s" %len(ma_total))
     return ma_total
 
 def get200ma_range(starttime, endtime, price_list, key_list):

@@ -1,16 +1,11 @@
 from datetime import datetime
 import calendar
 
-crypto_id = "doge-dogecoin"
-
 def convert_to_dt(timestamp):
   return datetime.utcfromtimestamp(timestamp)
 
 def convert_to_unix(dt_obj):
   return calendar.timegm(dt_obj.timetuple())
-
-def getCryptoId():
-  return crypto_id
 
 def getDailyPrices(startday, endday, price_list, key_list):
   daily_prices = []
