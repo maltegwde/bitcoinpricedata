@@ -22,13 +22,8 @@ fts = kl[0]           #first timestamp
 lts = kl[-1]          #last timestamp
 startdate = getStart_date(fts)  #get startdate
 enddate = getEnd_date(lts)      #get enddate
-print(isinstance(startdate, str))
-print(isinstance(enddate, str))
 fp = obj[startdate][0]['price'] #first price
 lp = obj[enddate][0]['price']   #last price
-
-
-
 print("First timestamp of data: %s  |  %s  |  %s" %(fts, convert_to_dt(int(fts)), fp))
 print("Last timestamp of data:  %s  |  %s  |  %s" %(lts, convert_to_dt(int(lts)), lp))
 
@@ -38,10 +33,10 @@ for k in kl:
   price_list.append(obj[k][0]['price'])
 
 #create a price_list from startdate to enddate used for graph
-price_list_se = []
+prices_daily = []
 tmp = int(startdate)
 while int(tmp) < int(enddate):
-  price_list_se.append(obj[str(tmp)][0]['price'])
+  prices_daily.append(obj[str(tmp)][0]['price'])
   tmp += 86400
 
 #create a new list of unix-timestamps from startdate to enddate
@@ -51,12 +46,12 @@ prices = kl[kl.index(str(startdate)):kl.index(str(enddate))]
 ma_days = [50, 200]
 for day in ma_days:
   plt.plot(getma_range(day, startdate, enddate, price_list, kl), label= str(day) + " day ma")
-plt.plot(price_list_se, label=crypto_id)
+plt.plot(prices_daily, label=crypto_id)
 
 #settings for matplotlib
 plt.xlabel("Time")
 plt.ylabel("Price")
-plt.xlim(0, len(price_list_se))
+plt.xlim(0, len(prices_daily))
 plt.ylim(0)
 plt.legend()
 plt.show()

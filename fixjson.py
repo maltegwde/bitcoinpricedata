@@ -1,5 +1,5 @@
 import json
-from tools import getCryptoId
+from config import getCryptoId
 
 crypto_id = getCryptoId()
 
@@ -7,12 +7,14 @@ filename = "json/" + crypto_id + ".json"
 
 with open(filename) as f:
   obj = json.load(f)
+  print(obj)
 
 kl = list(obj.keys()) #keylist
 output = {}
 
 missing_data = 0
 
+print(len(str(obj[kl[0]][0]['price'])))
 decimals = len(str(obj[kl[0]][0]['price']).split('.')[1])
 
 
