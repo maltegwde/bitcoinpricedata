@@ -2,7 +2,7 @@ import json
 import calendar
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-from movingaverage import get200ma, get200ma_range, get50ma_range, getma_range
+from movingaverage import getma_range
 from tools import convert_to_unix, convert_to_dt
 from config import getDebug_print, getCryptoId, getStart_date, getEnd_date
 
