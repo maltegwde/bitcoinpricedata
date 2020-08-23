@@ -2,9 +2,7 @@
 
 debug_print = False
 
-def is_goldencross(number, price_list):
-
-
+def is_goldencross(timestamp, price_list):
     return False
 
 def get200ma(timestamp, price_list, key_list):
@@ -88,12 +86,3 @@ def getma_range(number_of_days, starttime, endtime, price_list, key_list):
 
             ma_total.append(total)
     return ma_total
-
-def get200ma_range(starttime, endtime, price_list, key_list):
-    return getma_range(200 ,starttime, endtime, price_list, key_list)
-
-def get50ma_range(starttime, endtime, price_list, key_list):
-    return getma_range(50 ,starttime, endtime, price_list, key_list)
-
-def get50ma():
-    pass
