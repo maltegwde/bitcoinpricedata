@@ -1,7 +1,7 @@
 import requests
 import json
 from json.decoder import JSONDecodeError
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from tools import convert_to_unix, convert_to_dt
 from config import getCryptoId
 
@@ -11,8 +11,10 @@ from config import getCryptoId
 # 20000*60 = 1.200.000 seconds per request
 # 1577836800
 
-starttime = convert_to_unix(datetime(2013, 5, 1))
-endtime = convert_to_unix(datetime(2020, 8, 23) + timedelta(minutes=5))
+today = date.today() - timedelta(hours=24, minutes=5)
+
+starttime = convert_to_unix(datetime(2014, 1, 1))
+endtime = convert_to_unix(today)
 limit = 4000
 
 crypto_id = getCryptoId()
@@ -33,40 +35,42 @@ while utime <= endtime:
     i+=limit
     response = requests.get(url)
 
-    print("Statuscode: %s" % response.status_code)
+    sc = response.status_code
 
-    try:
-      res = json.loads(response.content)
-      for x in range(len(res)):
-        if(utime+5*60*x<endtime):
-            output[utime+5*60*x] = []
-            output[utime+5*60*x].append({
-                #'timestamp': res[x]["timestamp"],
-                #'unixtime': utime+5*60*x,
-                'price': res[x]["price"]
-            })
-        else: 
-            break
-      utime += c
-    except Exception as e:
-      print(e)
-    
-    print("Request number: %s" %(int(i/limit)))
-    #print("lenres %s" %len(res))
-    #print("Price at %s: %s " %(utime, res[utime+300]["price"]))
+    #print("Statuscode: %s" % response.status_code)
+
+    if sc == 200:
+      try:
+        res = json.loads(response.content)
+        for x in range(len(res)):
+          if(utime+5*60*x<endtime):
+              output[utime+5*60*x] = []
+              output[utime+5*60*x].append({
+                  #'timestamp': res[x]["timestamp"],
+                  #'unixtime': utime+5*60*x,
+                  'price': res[x]["price"],
+                  'volume': res[x]["volume_24h"]
+              })
+          else: 
+              break
+        utime += c
+      except Exception as e:
+        print(e)
+      
+      print("Request number: %s" %(int(i/limit)))
+      #print("lenres %s" %len(res))
+      #print("Price at %s: %s " %(utime, res[utime+300]["price"]))
 
 
 obj = output
 kl = list(obj.keys()) #keylist
 
+
 #with open('json/' + crypto_id + '.json', 'w') as outfile:
 #    json.dump(output, outfile, indent=4)
 
 missing_data = 0
-
-print(str(obj[kl[0]][0]['price']).split('.')[1])
 decimals = len(str(obj[kl[0]][0]['price']).split('.')[1])
-
 
 for i in range(len(kl)-1):
   tmp = int(kl[i]) + 300
@@ -109,6 +113,5 @@ with open(filename, 'w') as outfile:
     json.dump(merged, outfile, indent=4, sort_keys=True)
 
 print()
-print(decimals)
 print("Fixed the price-file! %s datapoints were fixed. That's %0.2f%% of all %s datapoints" %(missing_data, percentage_of_missing_datapoints, len(kl)))
 
