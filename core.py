@@ -3,7 +3,7 @@ import calendar
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 from movingaverage import get200ma, get200ma_range, get50ma_range, getma_range
-from tools import convert_to_unix, convert_to_dt, getDailyPrices
+from tools import convert_to_unix, convert_to_dt
 from config import getDebug_print, getCryptoId, getStart_date, getEnd_date
 
 #read from config file
@@ -39,9 +39,6 @@ while int(tmp) < int(enddate):
   prices_daily.append(obj[str(tmp)][0]['price'])
   tmp += 86400
 
-#create a new list of unix-timestamps from startdate to enddate
-prices = kl[kl.index(str(startdate)):kl.index(str(enddate))]
-
 #create lists of movingaverage and plot them
 ma_days = [50, 200]
 for day in ma_days:
@@ -54,4 +51,5 @@ plt.ylabel("Price")
 plt.xlim(0, len(prices_daily))
 plt.ylim(0)
 plt.legend()
+
 plt.show()

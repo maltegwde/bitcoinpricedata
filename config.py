@@ -4,7 +4,7 @@ from datetime import datetime
 from tools import convert_to_unix, convert_to_dt
 
 debug_print = False
-crpyto_id = "btc-bitcoin"
+crpyto_id = "ltc-litecoin"
 startdate = datetime(2015, 6, 4)
 enddate = datetime(2019, 8, 19)
 
