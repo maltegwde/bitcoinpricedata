@@ -5,24 +5,6 @@ debug_print = False
 def is_goldencross(timestamp, price_list):
     return False
 
-def get200ma(timestamp, price_list, key_list):
-    total = 0
-    daily = 0
-
-    index = 0
-
-    for day in range(200):    #last 200days
-        for ts in range(288):    #every timestamp per day
-            #daily += price_list[key_list.index(str(timestamp - (86400*day) - (300*ts)))]
-            if day == 0:
-                index = key_list.index(str(timestamp - (86400*day) - (300*ts)))
-            daily += price_list[index-(day*ts)]
-        #print("day %s avg: %0.2f" %(day, daily/288))
-        total += daily/288 
-        daily = 0
-
-    return round(total/200, 2)
-
 def getma_range(number_of_days, starttime, endtime, price_list, key_list):
     starttime = int(starttime)
     endtime = int(endtime)
